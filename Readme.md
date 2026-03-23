@@ -45,7 +45,7 @@ The agent features intelligent page analysis, robust error handling, and flexibl
 - **🔄 Error Recovery**: Robust error detection and recovery strategies
 - **👤 User Interaction**: Request information from the user during task execution when needed
 - **🌍 Multi-Browser Support**: Connect to existing Chrome browsers or launch new instances
-- **🔧 Multiple LLM Providers**: Support for OpenAI, Azure OpenAI, Groq, and Anthropic (Claude Sonnet 4.5)
+- **🔧 Multiple LLM Providers**: Support for OpenAI, Azure OpenAI, Groq, Anthropic (Claude Sonnet 4.5), and OpenRouter (300+ models)
 
 ## 🚀 Quick Start
 

@@ -17,7 +17,7 @@ The Browser Agent uses several configuration methods:
 Set your preferred LLM provider using the `LLM_PROVIDER` environment variable:
 
 ```bash
-export LLM_PROVIDER=groq  # Options: openai, azure, groq, anthropic
+export LLM_PROVIDER=groq  # Options: openai, azure, groq, anthropic, openrouter
 ```
 
 ### Provider-Specific Settings
@@ -51,6 +51,33 @@ export GROQ_API_KEY=your_api_key_here
 ```bash
 export LLM_PROVIDER=anthropic
 export ANTHROPIC_API_KEY=your_api_key_here
+```
+
+#### OpenRouter
+
+OpenRouter provides access to 300+ models from various providers through a unified API.
+
+```bash
+export LLM_PROVIDER=openrouter
+export OPENROUTER_API_KEY=your_api_key_here
+```
+
+**Model Format**: OpenRouter uses `provider/model` format (e.g., `openai/gpt-4o-mini`, `google/gemini-2.0-flash-lite-001`).
+
+Popular models that support tool calling:
+- `openai/gpt-4o-mini` - Fast and affordable
+- `google/gemini-2.0-flash-lite-001` - Google's fast model
+- `anthropic/claude-sonnet-4-20250514` - Anthropic's model via OpenRouter
+
+Configure the model in `configurations/config.py`:
+```python
+LLM_CONFIG = {
+    "openrouter": {
+        "model": "openai/gpt-4o-mini",
+        "temperature": 0,
+        "max_tokens": 4096,
+    },
+}
 ```
 
 ## Browser Configuration

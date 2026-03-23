@@ -35,7 +35,7 @@ The AI reasoning and decision-making component with custom LLM integration.
 
 - `agent.py` - Main agent initialization and LLM setup
 - `agent_graph.py` - Custom agentic loop executor
-- `llm_providers.py` - LLM provider wrappers (OpenAI, Azure, Anthropic, Groq)
+- `llm_providers.py` - LLM provider wrappers (OpenAI, Azure, Anthropic, Groq, OpenRouter)
 - `tools.py` - Custom tool decorator and JSON schema generation
 - `messages.py` - Message types for conversation flow
 
@@ -50,7 +50,7 @@ The AI reasoning and decision-making component with custom LLM integration.
 **Technology Stack:**
 
 - **Custom Agent Executor** - Synchronous agentic loop with tool binding
-- **Direct SDK Integration** - OpenAI, Azure OpenAI, Anthropic, Groq APIs
+- **Direct SDK Integration** - OpenAI, Azure OpenAI, Anthropic, Groq, OpenRouter APIs
 - **Custom Tool System** - Tool decorator with JSON schema generation
 
 ### 2. Browser Layer (`browser/`)

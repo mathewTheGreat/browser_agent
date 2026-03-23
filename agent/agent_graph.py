@@ -70,19 +70,22 @@ class AgentExecutor:
                         result = tool.invoke(tool_args)
                         tool_message = ToolMessage(
                             content=str(result),
-                            tool_call_id=tool_id
+                            tool_call_id=tool_id,
+                            name=tool_name
                         )
                         messages.append(tool_message)
                     except Exception as e:
                         tool_message = ToolMessage(
                             content=f"Error executing {tool_name}: {str(e)}",
-                            tool_call_id=tool_id
+                            tool_call_id=tool_id,
+                            name=tool_name
                         )
                         messages.append(tool_message)
                 else:
                     tool_message = ToolMessage(
                         content=f"Tool {tool_name} not found",
-                        tool_call_id=tool_id
+                        tool_call_id=tool_id,
+                        name=tool_name
                     )
                     messages.append(tool_message)
         
@@ -145,19 +148,22 @@ class AgentExecutor:
                         result = tool.invoke(tool_args)
                         tool_message = ToolMessage(
                             content=str(result),
-                            tool_call_id=tool_id
+                            tool_call_id=tool_id,
+                            name=tool_name
                         )
                         messages.append(tool_message)
                     except Exception as e:
                         tool_message = ToolMessage(
                             content=f"Error executing {tool_name}: {str(e)}",
-                            tool_call_id=tool_id
+                            tool_call_id=tool_id,
+                            name=tool_name
                         )
                         messages.append(tool_message)
                 else:
                     tool_message = ToolMessage(
                         content=f"Tool {tool_name} not found",
-                        tool_call_id=tool_id
+                        tool_call_id=tool_id,
+                        name=tool_name
                     )
                     messages.append(tool_message)
         

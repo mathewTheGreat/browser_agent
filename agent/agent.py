@@ -1,7 +1,7 @@
 import os
 
 from agent.messages import HumanMessage, SystemMessage
-from agent.llm_providers import ChatGroq, ChatOpenAI, AzureChatOpenAI, ChatAnthropic
+from agent.llm_providers import ChatGroq, ChatOpenAI, AzureChatOpenAI, ChatAnthropic, ChatOpenRouter
 from agent.agent_graph import AgentExecutor
 from agent.memory import SessionMemory
 from browser.controllers.browser_controller import get_browser_tools
@@ -37,6 +37,13 @@ def create_agent():
         )
     elif LLM_PROVIDER == "anthropic":
         llm = ChatAnthropic(
+            model=config["model"],
+            temperature=config["temperature"],
+            max_tokens=config["max_tokens"],
+            api_key=config["api_key"]
+        )
+    elif LLM_PROVIDER == "openrouter":
+        llm = ChatOpenRouter(
             model=config["model"],
             temperature=config["temperature"],
             max_tokens=config["max_tokens"],

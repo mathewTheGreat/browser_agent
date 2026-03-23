@@ -47,10 +47,16 @@ class ChatOpenAI(LLMBase):
             
             formatted_messages = []
             for msg in messages:
-                formatted_messages.append({
+                msg_dict = {
                     "role": msg.role,
                     "content": msg.content
-                })
+                }
+                if msg.role == "tool":
+                    if hasattr(msg, 'tool_call_id'):
+                        msg_dict["tool_call_id"] = msg.tool_call_id
+                    if hasattr(msg, 'name') and msg.name:
+                        msg_dict["name"] = msg.name
+                formatted_messages.append(msg_dict)
             
             tools_param = None
             if self.tools:
@@ -108,10 +114,16 @@ class ChatAnthropic(LLMBase):
                 if msg.role == "system":
                     system_prompt = msg.content
                 else:
-                    formatted_messages.append({
+                    msg_dict = {
                         "role": msg.role,
                         "content": msg.content
-                    })
+                    }
+                    if msg.role == "tool":
+                        if hasattr(msg, 'tool_call_id'):
+                            msg_dict["tool_use_id"] = msg.tool_call_id
+                        if hasattr(msg, 'name') and msg.name:
+                            msg_dict["name"] = msg.name
+                    formatted_messages.append(msg_dict)
             
             tools_param = None
             if self.tools:
@@ -176,10 +188,16 @@ class ChatGroq(LLMBase):
             
             formatted_messages = []
             for msg in messages:
-                formatted_messages.append({
+                msg_dict = {
                     "role": msg.role,
                     "content": msg.content
-                })
+                }
+                if msg.role == "tool":
+                    if hasattr(msg, 'tool_call_id'):
+                        msg_dict["tool_call_id"] = msg.tool_call_id
+                    if hasattr(msg, 'name') and msg.name:
+                        msg_dict["name"] = msg.name
+                formatted_messages.append(msg_dict)
             
             tools_param = None
             if self.tools:
@@ -216,6 +234,68 @@ class ChatGroq(LLMBase):
             return AIMessage(content=f"Error calling Groq: {str(e)}")
 
 
+class ChatOpenRouter(LLMBase):
+    """OpenRouter API wrapper - OpenAI compatible with custom base URL."""
+    
+    def __init__(self, model: str, temperature: float = 0.7, max_tokens: int = 4096, api_key: Optional[str] = None):
+        super().__init__(model, temperature, max_tokens, api_key)
+        self.base_url = "https://openrouter.ai/api/v1"
+        self.api_key = api_key or os.getenv("OPENROUTER_API_KEY")
+    
+    def invoke(self, messages: List[Any]) -> AIMessage:
+        """Call OpenRouter API."""
+        try:
+            import openai
+            
+            client = openai.OpenAI(api_key=self.api_key, base_url=self.base_url)
+            
+            formatted_messages = []
+            for msg in messages:
+                msg_dict = {
+                    "role": msg.role,
+                    "content": msg.content
+                }
+                if msg.role == "tool":
+                    if hasattr(msg, 'tool_call_id'):
+                        msg_dict["tool_call_id"] = msg.tool_call_id
+                    if hasattr(msg, 'name') and msg.name:
+                        msg_dict["name"] = msg.name
+                formatted_messages.append(msg_dict)
+            
+            tools_param = None
+            if self.tools:
+                tools_param = [tool.to_json_schema() for tool in self.tools]
+            
+            api_kwargs = {
+                "model": self.model,
+                "messages": formatted_messages,
+                "temperature": self.temperature,
+            }
+            if tools_param:
+                api_kwargs["tools"] = tools_param
+                api_kwargs["tool_choice"] = "auto"
+            if self.max_tokens:
+                api_kwargs["max_tokens"] = self.max_tokens
+            
+            response = client.chat.completions.create(**api_kwargs)
+            
+            content = response.choices[0].message.content or ""
+            tool_calls = []
+            
+            if hasattr(response.choices[0].message, 'tool_calls') and response.choices[0].message.tool_calls:
+                for tc in response.choices[0].message.tool_calls:
+                    tool_calls.append({
+                        "id": tc.id,
+                        "name": tc.function.name,
+                        "args": json.loads(tc.function.arguments)
+                    })
+            
+            return AIMessage(content=content, tool_calls=tool_calls)
+        
+        except Exception as e:
+            return AIMessage(content=f"Error calling OpenRouter: {str(e)}")
+
+
 class AzureChatOpenAI(LLMBase):
     """Azure OpenAI wrapper."""
     
@@ -235,7 +315,7 @@ class AzureChatOpenAI(LLMBase):
             client = AzureOpenAI(
                 api_key=self.api_key,
                 api_version=self.api_version,
-                azure_endpoint=self.azure_endpoint
+                azure_endpoint=str(self.azure_endpoint) if self.azure_endpoint else ""
             )
             
             formatted_messages = []
@@ -256,13 +336,27 @@ class AzureChatOpenAI(LLMBase):
                         }
                         for tc in msg.tool_calls
                     ]
-                if msg.role == "tool" and hasattr(msg, 'tool_call_id'):
-                    msg_dict["tool_call_id"] = msg.tool_call_id
+                if msg.role == "tool":
+                    if hasattr(msg, 'tool_call_id'):
+                        msg_dict["tool_call_id"] = msg.tool_call_id
+                    if hasattr(msg, 'name') and msg.name:
+                        msg_dict["name"] = msg.name
                 formatted_messages.append(msg_dict)
             
             tools_param = None
             if self.tools:
-                tools_param = [tool.to_json_schema() for tool in self.tools]
+                tools_param = [
+                    {
+                        "name": tool.name,
+                        "description": tool.description,
+                        "parameters": {
+                            "type": "object",
+                            "properties": tool.parameters,
+                            "required": list(tool.parameters.keys())
+                        }
+                    }
+                    for tool in self.tools
+                ]
             
             api_kwargs = {
                 "model": self.model,

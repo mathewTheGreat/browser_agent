@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # LLM Provider Configuration
-# Choose your preferred provider: "openai", "azure", "groq", "anthropic"
+# Choose your preferred provider: "openai", "azure", "groq", "anthropic", "openrouter"
 LLM_PROVIDER = os.getenv("LLM_PROVIDER", "groq")  # Default to Groq
 
 # LLM Provider Settings
@@ -36,6 +36,12 @@ LLM_CONFIG = {
         "model": "claude-sonnet-4-20250514",  # Claude Sonnet 4.5 (Preview)
         "temperature": 0,
         "max_tokens": 8192,  # Increased for Claude Sonnet 4.5
+    },
+    "openrouter": {
+        "api_key": os.getenv("OPENROUTER_API_KEY"),
+        "model": "nvidia/nemotron-3-super-120b-a12b:free",  # Example: provider/model format
+        "temperature": 0,
+        "max_tokens": 4096,
     }
 }
 

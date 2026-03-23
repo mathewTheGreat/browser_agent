@@ -51,9 +51,10 @@ class ToolMessage(BaseMessage):
     """Message containing tool execution result."""
     role = "tool"
     
-    def __init__(self, content: str, tool_call_id: str, **kwargs):
+    def __init__(self, content: str, tool_call_id: str, name: Optional[str] = None, **kwargs):
         super().__init__(content, **kwargs)
         self.tool_call_id = tool_call_id
+        self.name = name
     
     def pretty_print(self):
         print(f"Tool result ({self.tool_call_id}): {self.content[:100]}...")
