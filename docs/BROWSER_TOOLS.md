@@ -393,3 +393,92 @@ DEBUG_CONFIG = {
     "save_page_source": True
 }
 ```
+
+## File System Tools (Optional)
+
+File system tools are disabled by default. Enable them with the `--file-tools` flag:
+
+```bash
+uv run main.py run --file-tools
+```
+
+### `read_file`
+
+Read the contents of a file.
+
+**Usage:**
+```python
+read_file("/path/to/file.txt")
+```
+
+**Parameters:**
+- `file_path`: Absolute or relative path to the file
+
+### `write_file`
+
+Write content to a file (creates or overwrites).
+
+**Usage:**
+```python
+write_file("/path/to/file.txt", "Hello, World!")
+```
+
+**Parameters:**
+- `file_path`: Destination file path
+- `content`: Text content to write
+
+### `edit_file`
+
+Edit specific text in an existing file.
+
+**Usage:**
+```python
+edit_file("/path/to/file.txt", "old text", "new text")
+```
+
+**Parameters:**
+- `file_path`: File to edit
+- `old_string`: Exact text to find and replace
+- `new_string`: Replacement text
+
+### `list_directory`
+
+List contents of a directory.
+
+**Usage:**
+```python
+list_directory("/path/to/dir")  # or just list_directory(".") for current dir
+```
+
+### `search_files`
+
+Find files by glob pattern.
+
+**Usage:**
+```python
+search_files("*.txt")           # Find all .txt files
+search_files("*.py", "/src")    # Find Python files in /src
+```
+
+### `grep_files`
+
+Search for text within files.
+
+**Usage:**
+```python
+grep_files("search term")              # Search in current directory
+grep_files("error", "/var/log", "*.log")  # Search .log files for "error"
+```
+
+### `bash`
+
+Execute shell commands.
+
+**Usage:**
+```python
+bash("ls -la")
+bash("git status")
+bash("echo 'Hello' > file.txt")
+```
+
+**Note:** Commands have a 30-second timeout for safety.

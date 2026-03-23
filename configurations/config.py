@@ -29,7 +29,7 @@ LLM_CONFIG = {
         "api_key": os.getenv("GROQ_API_KEY"),
         "model": "openai/gpt-oss-120b",
         "temperature": 0,
-        "max_tokens": 2048,
+        "max_tokens": 4096,
     },
     "anthropic": {
         "api_key": os.getenv("ANTHROPIC_API_KEY"),

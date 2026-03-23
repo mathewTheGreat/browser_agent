@@ -46,6 +46,7 @@ The agent features intelligent page analysis, robust error handling, and flexibl
 - **👤 User Interaction**: Request information from the user during task execution when needed
 - **🌍 Multi-Browser Support**: Connect to existing Chrome browsers or launch new instances
 - **🔧 Multiple LLM Providers**: Support for OpenAI, Azure OpenAI, Groq, Anthropic (Claude Sonnet 4.5), and OpenRouter (300+ models)
+- **📁 File System Tools** (optional): Read, write, edit files, run bash commands when enabled
 
 ## 🚀 Quick Start
 

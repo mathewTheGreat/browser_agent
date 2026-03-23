@@ -39,7 +39,12 @@ def command_run(args):
     # Create the agent with enhanced error handling
     print_status_bar("Creating AI agent with tools...", "PROGRESS")
     try:
-        agent_executor = create_agent()
+        include_file_tools = getattr(args, 'file_tools', False)
+        agent_executor = create_agent(include_file_tools=include_file_tools)
+        
+        if include_file_tools:
+            print_status_bar("File system tools enabled!", "SUCCESS")
+        
         print_status_bar("Agent created successfully!", "SUCCESS")
     except Exception as agent_error:
         print_status_bar(f"Failed to create agent: {str(agent_error)}", "ERROR")

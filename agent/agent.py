@@ -5,10 +5,15 @@ from agent.llm_providers import ChatGroq, ChatOpenAI, AzureChatOpenAI, ChatAnthr
 from agent.agent_graph import AgentExecutor
 from agent.memory import SessionMemory
 from browser.controllers.browser_controller import get_browser_tools
+from agent.file_tools import get_file_tools
 from configurations.config import LLM_PROVIDER, CURRENT_LLM_CONFIG
     
-def create_agent():
-    """Create an agent using the configured LLM provider."""
+def create_agent(include_file_tools: bool = False):
+    """Create an agent using the configured LLM provider.
+    
+    Args:
+        include_file_tools: If True, includes file system tools (read, write, edit, bash, etc.)
+    """
     config = CURRENT_LLM_CONFIG
     
     if LLM_PROVIDER == "openai":
@@ -55,27 +60,43 @@ def create_agent():
     print(f"Initialized {LLM_PROVIDER} LLM with model: {config['model']}")
 
     tools = get_browser_tools()
+    
+    if include_file_tools:
+        tools.extend(get_file_tools())
+        print("File system tools enabled")
+    
     llm = llm.bind_tools(tools)
     
-    system_prompt = """You are an expert browser automation agent. Your goal is to complete tasks autonomously and efficiently without unnecessary questions.
+    file_tools_section = """
+## FILE TOOLS (when enabled)
+• read_file(path) - Read file contents
+• write_file(path, content) - Write content to file
+• edit_file(path, old_string, new_string) - Edit specific text in file
+• list_directory(path) - List directory contents
+• search_files(pattern, path) - Find files by glob pattern
+• grep_files(pattern, path) - Search text within files
+• bash(command) - Execute shell commands
+
+""" if include_file_tools else ""
+    
+    system_prompt = f"""You are an expert browser automation agent. Your goal is to complete tasks autonomously and efficiently without unnecessary questions.
 
 ## CORE WORKFLOW
 1. **Analyze** → Use analyze_page() to inspect current viewport
 2. **Execute** → Perform actions decisively (click, type, navigate, scroll)
 3. **Verify** → Use analyze_page() after major changes to confirm success
 4. **Adapt** → If blocked, re-analyze and try alternatives before asking
-5. **Complete** → Report success with concrete evidence from the page
-
+5. **Complete** → Report success with concrete evidence from the page{file_tools_section}
 ## AVAILABLE TOOLS
 • analyze_page() - Inspect current viewport (element IDs, types, text, positions). Use frequently.
 • navigate(url) - Go to a URL
 • go_back() - Navigate back
 • scroll(direction) - "down", "up", "top", "bottom"
-• click(json/string) - Click element: {"id": "5", "type": "button", "text": "Submit"}
+• click(json/string) - Click element: {{"id": "5", "type": "button", "text": "Submit"}}
 • type(text) - Type text (MUST click input field first)
-• select_option({"id": "...", "type": "dropdown", "text": "Label", "value": "Option"})
+• select_option({{"id": "...", "type": "dropdown", "text": "Label", "value": "Option"}})
 • keyboard_action(key) - "Enter", "Tab", "Escape", "Ctrl+A", etc.
-• ask_user({"prompt": "...", "type": "text/password/choice", "choices": [...], "default": "..."}
+• ask_user({{"prompt": "...", "type": "text/password/choice", "choices": [...], "default": "..."}})
 
 ## AUTONOMOUS EXECUTION RULES
 ✓ Make reasonable assumptions when targets are ambiguous (use best match)

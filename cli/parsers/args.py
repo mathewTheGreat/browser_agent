@@ -73,6 +73,8 @@ def setup_argparse():
     run_parser.add_argument("--headless", action="store_true", help="Run in headless mode")
     run_parser.add_argument("--profile", choices=["temp", "default"], default="temp",
                            help="Browser profile: 'temp' (clean) or 'default' (local browser with saved data)")
+    run_parser.add_argument("--file-tools", action="store_true", 
+                           help="Enable file system tools (read, write, edit files, bash commands)")
     run_parser.add_argument("--mode", choices=["close_reopen", "new_window"], 
                            help="If Chrome is running: 'close_reopen' (keep logins) or 'new_window' (clean)")
     run_parser.add_argument("--port", type=int, default=9222, help="Debug port (default: 9222)")

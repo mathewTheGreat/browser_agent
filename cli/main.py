@@ -50,7 +50,8 @@ def main():
             port=9222,
             timeout=30,
             max_retries=3,
-            verbose=args.verbose
+            verbose=args.verbose,
+            file_tools=False
         )
         args = default_args
     

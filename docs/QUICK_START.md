@@ -63,6 +63,23 @@ uv run main.py launch --port 9222
 uv run main.py debug
 ```
 
+## File System Tools (Optional)
+
+Enable file system capabilities to let the agent read, write, and edit files:
+
+```bash
+# Enable file tools
+uv run main.py run --file-tools
+```
+
+**Example tasks with file tools:**
+
+```
+Search for the latest news, save the headlines to a file called news.txt
+Read the file config.json and tell me what's in it
+Create a report of the websites you visited and save it to report.md
+```
+
 ## Example Tasks
 
 Try these example tasks to get familiar with the agent:

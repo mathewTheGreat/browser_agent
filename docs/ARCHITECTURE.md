@@ -38,6 +38,7 @@ The AI reasoning and decision-making component with custom LLM integration.
 - `llm_providers.py` - LLM provider wrappers (OpenAI, Azure, Anthropic, Groq, OpenRouter)
 - `tools.py` - Custom tool decorator and JSON schema generation
 - `messages.py` - Message types for conversation flow
+- `file_tools.py` - File system tools (read, write, edit, bash, etc.)
 
 **Responsibilities:**
 
@@ -273,6 +274,16 @@ def tool_name(parameters) -> str:
 4. **User Tools**
    - `ask_user(prompt)` - User interaction and input
 
+5. **File System Tools** (optional, enabled with `--file-tools`)
+
+   - `read_file(path)` - Read file contents
+   - `write_file(path, content)` - Write to file
+   - `edit_file(path, old, new)` - Edit file text
+   - `list_directory(path)` - List directory contents
+   - `search_files(pattern, path)` - Find files by pattern
+   - `grep_files(pattern, path)` - Search text in files
+   - `bash(command)` - Execute shell commands
+
 ### Tool Registration
 
 Tools are automatically discovered and registered:
@@ -290,6 +301,18 @@ def get_browser_tools():
         scroll,
         go_back,
         ask_user
+    ]
+
+def get_file_tools():
+    """Collect all file system tools for agent use."""
+    return [
+        read_file,
+        write_file,
+        edit_file,
+        list_directory,
+        search_files,
+        grep_files,
+        bash
     ]
 ```
 
